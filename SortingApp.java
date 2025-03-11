@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.*;
 
+import static java.lang.Math.log;
+
 public class SortingApp {
     // ANSI escape codes for colors and bold text
     private static final String CYAN = "\u001B[36;1m";
@@ -86,12 +88,55 @@ public class SortingApp {
             System.out.println(YELLOW + Arrays.toString(arr) + RESET);
     }
 
-    // Counting Sort (O(n))
+    // radix Sort (O(n))
     public int[] nonComparisonSort(boolean showSteps) {
         int[] arr = Arrays.copyOf(array, array.length);
         if (showSteps)
-            System.out.println(YELLOW + "Counting Sort Steps:" + RESET);
+            System.out.println(YELLOW + "radix Sort Steps:" + RESET);
+        OptionalInt min = Arrays.stream(arr).min();
+        if(min.isPresent() && min.getAsInt() > 0)
+            radixSort(arr, showSteps);
+        else if(min.isPresent()){
+            System.out.println("Can't use radix sort with negative numbers");
+        }
         return arr;
+    }
+
+    public void radixSort(int[] arr, Boolean showsteps){
+        int base = arr.length, iterations, curBase = base;
+        OptionalInt maxElement = Arrays.stream(arr).max();
+        iterations = (int) (log(maxElement.getAsInt()) / log(base)) + 1;
+        ArrayList<Integer>[] buckets;
+        buckets = new ArrayList[base];
+        for(int j = 0; j < base; ++j){
+            buckets[j] = new ArrayList<>();
+        }
+        for(int i = 0; i < iterations; ++i){
+            int[] newArr = Arrays.copyOf(arr, arr.length);
+            for(int j = 0; j < arr.length; ++j){
+                buckets[myMod(arr[j], curBase, base)].add(arr[j]);
+            }
+            for(int j = 0, idx = 0; j < base; ++j){
+                for(int k : buckets[j]){
+                    arr[idx++] = k;
+                }
+            }
+            for(int j = 0; j < base; ++j){
+                buckets[j].clear();
+            }
+            if(showsteps){
+                for(int j : arr){
+                    System.out.print(j + " ");
+                }
+                System.out.println();
+            }
+            curBase *= base;
+        }
+    }
+
+    public Integer myMod(Integer a, Integer currBase, Integer base){
+        int prevBase = currBase / base;
+        return (a % currBase) / prevBase ;
     }
 
     // Command-line interface for the user

@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Generator {
     public static void main(String[] args) {
-        String filename = "very_big_input.txt";
+        String filename = "input.txt";
         int numberOfElements = 1000; // Change this to generate more numbers
         int maxNumber = 10000; // Maximum value for random numbers
 
