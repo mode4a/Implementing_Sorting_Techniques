@@ -6,146 +6,262 @@ import java.util.Random;
 import java.io.IOException;
 
 class SortingAppTest {
-
+    private Random random = new Random(42); 
+    Boolean showSteps = false;
+    Boolean calculateTime = false;
 
     @Test
-    void testStandardArraySort() throws IOException {
-        // Create a SortingApp instance with predetermined array values
-        int[] inputArray = {10, 7, 8, 9, 1, 5, 3, 2, 6, 4};
-        SortingApp sorter = new SortingApp(inputArray);
-
-        // Expected sorted array
-        int[] expected = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-
-        // Test all three sorting algorithms
-        assertArrayEquals(expected, sorter.simpleSort(false), "Bubble sort failed with standard array");
-        assertArrayEquals(expected, sorter.efficientSort(false), "Merge sort failed with standard array");
-        assertArrayEquals(expected, sorter.nonComparisonSort(false), "Radix sort failed with standard array");
-    }
-
-    // Test with single element array
-    @Test
-    void testSingleElementArray() throws IOException {
-        int[] inputArray = {42};
-        SortingApp sorter = new SortingApp(inputArray);
-
-        int[] expected = {42};
-
-        assertArrayEquals(expected, sorter.simpleSort(false), "Bubble sort failed with single element");
-        assertArrayEquals(expected, sorter.efficientSort(false), "Merge sort failed with single element");
-        assertArrayEquals(expected, sorter.nonComparisonSort(false), "Radix sort failed with single element");
-    }
-
-    // Test with already sorted array
-    @Test
-    void testAlreadySortedArray() throws IOException {
+    void testSortedArray10() throws IOException {
         int[] inputArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = Arrays.copyOf(inputArray, inputArray.length);
 
-        int[] expected = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-
-        assertArrayEquals(expected, sorter.simpleSort(false), "Bubble sort failed with already sorted array");
-        assertArrayEquals(expected, sorter.efficientSort(false), "Merge sort failed with already sorted array");
-        assertArrayEquals(expected, sorter.nonComparisonSort(false), "Radix sort failed with already sorted array");
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with sorted array (size 10)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with sorted array (size 10)");
+        assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with sorted array (size 10)");
     }
 
-    // Test with reverse sorted array
     @Test
-    void testReverseSortedArray() throws IOException {
+    void testReversedArray10() throws IOException {
         int[] inputArray = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
         SortingApp sorter = new SortingApp(inputArray);
-
         int[] expected = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-        assertArrayEquals(expected, sorter.simpleSort(false), "Bubble sort failed with reverse sorted array");
-        assertArrayEquals(expected, sorter.efficientSort(false), "Merge sort failed with reverse sorted array");
-        assertArrayEquals(expected, sorter.nonComparisonSort(false), "Radix sort failed with reverse sorted array");
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with reversed array (size 10)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with reversed array (size 10)");
+        assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with reversed array (size 10)");
     }
 
-    // Test with duplicate elements
     @Test
-    void testArrayWithDuplicates() throws IOException {
-        int[] inputArray = {5, 2, 8, 2, 5, 1, 8};
+    void testUnorderedArray10() throws IOException {
+        int[] inputArray = {7, 2, 9, 4, 1, 8, 5, 10, 3, 6};
         SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-        int[] expected = {1, 2, 2, 5, 5, 8, 8};
-
-        assertArrayEquals(expected, sorter.simpleSort(false), "Bubble sort failed with duplicate elements");
-        assertArrayEquals(expected, sorter.efficientSort(false), "Merge sort failed with duplicate elements");
-        assertArrayEquals(expected, sorter.nonComparisonSort(false), "Radix sort failed with duplicate elements");
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with unordered array (size 10)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with unordered array (size 10)");
+        assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with unordered array (size 10)");
     }
 
-    // Test with all same values
     @Test
-    void testArrayWithAllSameValues() throws IOException {
-        int[] inputArray = {7, 7, 7, 7, 7};
+    void testNegativeArray10() throws IOException {
+        int[] inputArray = {-5, -2, -9, -7, -1, -8, -4, -3, -6, -10};
         SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = {-10, -9, -8, -7, -6, -5, -4, -3, -2, -1};
 
-        int[] expected = {7, 7, 7, 7, 7};
-
-        assertArrayEquals(expected, sorter.simpleSort(false), "Bubble sort failed with same values");
-        assertArrayEquals(expected, sorter.efficientSort(false), "Merge sort failed with same values");
-        assertArrayEquals(expected, sorter.nonComparisonSort(false), "Radix sort failed with same values");
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with random mixed array (size 10)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with random array (size 10)");
+        //assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with random array (size 10)");
     }
 
-    // Test with negative numbers
     @Test
-    void testWithNegativeNumbers() throws IOException {
-        int[] inputArray = {-5, -10, -1, -8, -3};
+    void testMixedArray10() throws IOException {
+        int[] inputArray = {-5, 2, -9, 7, -1, 8, -4, 3, -6, 10};
         SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = {-9, -6, -5, -4, -1, 2, 3, 7, 8, 10};
 
-        int[] expected = {-10, -8, -5, -3, -1};
-
-        assertArrayEquals(expected, sorter.simpleSort(false), "Bubble sort failed with negative numbers");
-        assertArrayEquals(expected, sorter.efficientSort(false), "Merge sort failed with negative numbers");
-
-        // Note: The original Radix sort implementation doesn't handle negative numbers correctly
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with random mixed array (size 10)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with random array (size 10)");
+        //assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with random array (size 10)");
     }
 
-    // Test with mixed positive and negative numbers
     @Test
-    void testWithMixedNumbers() throws IOException {
-        int[] inputArray = {5, -10, 7, -3, 2, 0, -1};
+    void testSortedArray50() throws IOException {
+        int[] inputArray = new int[50];
+        for (int i = 0; i < 50; i++) {
+            inputArray[i] = i + 1;
+        }
         SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = Arrays.copyOf(inputArray, inputArray.length);
 
-        int[] expected = {-10, -3, -1, 0, 2, 5, 7};
-
-        assertArrayEquals(expected, sorter.simpleSort(false), "Bubble sort failed with mixed numbers");
-        assertArrayEquals(expected, sorter.efficientSort(false), "Merge sort failed with mixed numbers");
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with sorted array (size 50)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with sorted array (size 50)");
+        assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with sorted array (size 50)");
     }
 
-    // Test with empty array
     @Test
-    void testEmptyArray() throws IOException {
-        int[] inputArray = {};
+    void testReversedArray50() throws IOException {
+        int[] inputArray = new int[50];
+        for (int i = 0; i < 50; i++) {
+            inputArray[i] = 50 - i;
+        }
         SortingApp sorter = new SortingApp(inputArray);
-
-        int[] expected = {};
-
-        assertArrayEquals(expected, sorter.simpleSort(false), "Bubble sort failed with empty array");
-        assertArrayEquals(expected, sorter.efficientSort(false), "Merge sort failed with empty array");
-        assertArrayEquals(expected, sorter.nonComparisonSort(false), "Radix sort failed with empty array");
-    }
-
-    // Test with large array
-    @Test
-    void testLargeArray() throws IOException {
-        // Generate a large array of random integers
-        Random random = new Random(42); // Use a seed for reproducibility
-        int size = 1000;
-        int[] inputArray = new int[size];
-        for (int i = 0; i < size; i++) {
-            inputArray[i] = random.nextInt(10000);
+        int[] expected = new int[50];
+        for (int i = 0; i < 50; i++) {
+            expected[i] = i + 1;
         }
 
-        SortingApp sorter = new SortingApp(inputArray);
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with reversed array (size 50)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with reversed array (size 50)");
+        assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with reversed array (size 50)");
+    }
 
-        // Create expected result using Arrays.sort
+    @Test
+    void testRandomArray50() throws IOException {
+        int[] inputArray = new int[50];
+        for (int i = 0; i < 50; i++) {
+            inputArray[i] = random.nextInt(1000);
+        }
+        SortingApp sorter = new SortingApp(inputArray);
         int[] expected = Arrays.copyOf(inputArray, inputArray.length);
         Arrays.sort(expected);
 
-        assertArrayEquals(expected, sorter.simpleSort(false), "Bubble sort failed with large array");
-        assertArrayEquals(expected, sorter.efficientSort(false), "Merge sort failed with large array");
-        assertArrayEquals(expected, sorter.nonComparisonSort(false), "Radix sort failed with large array");
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with random array (size 50)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with random array (size 50)");
+        assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with random array (size 50)");
     }
+
+    @Test
+    void testRandomMixedArray50() throws IOException {
+        int[] inputArray = new int[50];
+        for (int i = 0; i < 50; i++) {
+            inputArray[i] = random.nextInt(1000) - 500; // Range [-500, 499]
+        }
+        SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = Arrays.copyOf(inputArray, inputArray.length);
+        Arrays.sort(expected);
+
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with random mixed array (size 50)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with random array (size 50)");
+        //assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with random array (size 50)");
+    }
+
+    @Test
+    void testSortedArray100() throws IOException {
+        int[] inputArray = new int[100];
+        for (int i = 0; i < 100; i++) {
+            inputArray[i] = i + 1;
+        }
+        SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = Arrays.copyOf(inputArray, inputArray.length);
+
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with sorted array (size 100)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with sorted array (size 100)");
+        assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with sorted array (size 100)");
+    }
+
+    @Test
+    void testReversedArray100() throws IOException {
+        int[] inputArray = new int[100];
+        for (int i = 0; i < 100; i++) {
+            inputArray[i] = 100 - i;
+        }
+        SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = new int[100];
+        for (int i = 0; i < 100; i++) {
+            expected[i] = i + 1;
+        }
+
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with reversed array (size 100)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with reversed array (size 100)");
+        assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with reversed array (size 100)");
+    }
+
+    @Test
+    void testRandomArray100() throws IOException {
+        int[] inputArray = new int[100];
+        for (int i = 0; i < 100; i++) {
+            inputArray[i] = random.nextInt(10000);
+        }
+        SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = Arrays.copyOf(inputArray, inputArray.length);
+        Arrays.sort(expected);
+
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with random array (size 100)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with random array (size 100)");
+        assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with random array (size 100)");
+    }
+
+    @Test
+    void testRandomMixedArray100() throws IOException {
+        int[] inputArray = new int[100];
+        for (int i = 0; i < 100; i++) {
+            inputArray[i] = random.nextInt(10000) - 5000; // Range [-5000, 4999]
+        }
+        SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = Arrays.copyOf(inputArray, inputArray.length);
+        Arrays.sort(expected);
+
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with random mixed array (size 100)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with random array (size 100)");
+        //assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with random array (size 100)");
+    }
+
+    @Test
+    void testRandomArray1000() throws IOException {
+        int[] inputArray = new int[1000];
+        for (int i = 0; i < 1000; i++) {
+            inputArray[i] = random.nextInt(10000);
+        }
+        SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = Arrays.copyOf(inputArray, inputArray.length);
+        Arrays.sort(expected);
+
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with random mixed array (size 100)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with random array (size 100)");
+        assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with random array (size 100)");
+    }
+
+    @Test
+    void testRandomArray2500() throws IOException {
+        int[] inputArray = new int[2500];
+        for (int i = 0; i < 2500; i++) {
+            inputArray[i] = random.nextInt(10000);
+        }
+        SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = Arrays.copyOf(inputArray, inputArray.length);
+        Arrays.sort(expected);
+
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with random mixed array (size 2500)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with random array (size 2500)");
+        assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with random array (size 2500)");
+    }
+
+    @Test
+    void testRandomMixedArray2500() throws IOException {
+        int[] inputArray = new int[2500];
+        for (int i = 0; i < 2500; i++) {
+            inputArray[i] = random.nextInt(10000) - 5000; // Range [-5000, 4999]
+        }
+        SortingApp sorter = new SortingApp(inputArray);
+        int[] expected = Arrays.copyOf(inputArray, inputArray.length);
+        Arrays.sort(expected);
+
+        assertArrayEquals(expected, sorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with random mixed array (size 2500)");
+        assertArrayEquals(expected, sorter.efficientSort(showSteps, calculateTime), "Merge sort failed with random array (size 2500)");
+        //assertArrayEquals(expected, sorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with random array (size 2500)");
+    }
+
+    @Test
+    void testEdgeCases() throws IOException {
+        // Empty array
+        int[] emptyArray = {};
+        SortingApp emptySorter = new SortingApp(emptyArray);
+        assertArrayEquals(emptyArray, emptySorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with empty array");
+        assertArrayEquals(emptyArray, emptySorter.efficientSort(showSteps, calculateTime), "Merge sort failed with empty array");
+        assertArrayEquals(emptyArray, emptySorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with empty array");
+
+        // Single element array
+        int[] singleArray = {42};
+        SortingApp singleSorter = new SortingApp(singleArray);
+        assertArrayEquals(singleArray, singleSorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with single element array");
+        assertArrayEquals(singleArray, singleSorter.efficientSort(showSteps, calculateTime), "Merge sort failed with single element array");
+        assertArrayEquals(singleArray, singleSorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with single element array");
+
+        // Duplicate elements
+        int[] duplicateArray = {5, 2, 8, 2, 5, 1, 8};
+        SortingApp duplicateSorter = new SortingApp(duplicateArray);
+        int[] expected = {1, 2, 2, 5, 5, 8, 8};
+        assertArrayEquals(expected, duplicateSorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with duplicate elements");
+        assertArrayEquals(expected, duplicateSorter.efficientSort(showSteps, calculateTime), "Merge sort failed with duplicate elements");
+        assertArrayEquals(expected, duplicateSorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with duplicate elements");
+        
+        // All same values
+        int[] sameArray = {7, 7, 7, 7, 7};
+        SortingApp sameSorter = new SortingApp(sameArray);
+        assertArrayEquals(sameArray, sameSorter.simpleSort(showSteps, calculateTime), "Bubble sort failed with all same values");
+        assertArrayEquals(sameArray, sameSorter.efficientSort(showSteps, calculateTime), "Merge sort failed with all same values");
+        assertArrayEquals(sameArray, sameSorter.nonComparisonSort(showSteps, calculateTime), "Radix sort failed with all same values");
+    }
+    
 }

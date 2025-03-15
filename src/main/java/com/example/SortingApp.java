@@ -23,8 +23,13 @@ public class SortingApp {
     }
 
     // Bubble Sort (O(n²))
-    public int[] simpleSort(boolean showSteps) {
+    public int[] simpleSort(boolean showSteps, Boolean calculateTime) {
         int[] arr = Arrays.copyOf(array, array.length);
+        long startTime = 0;
+        if (calculateTime) {
+            startTime = System.nanoTime();
+        }
+
         if (showSteps)
             System.out.println(YELLOW + "Bubble Sort Steps:" + RESET);
         for (int i = 0; i < arr.length; i++) {
@@ -38,21 +43,40 @@ public class SortingApp {
             if (showSteps)
                 System.out.println(YELLOW + Arrays.toString(arr) + RESET);
         }
+        if (calculateTime) {
+            long endTime = System.nanoTime();
+            double elapsedTimeMs = (endTime - startTime) / 1_000_000.0;
+            System.out.println("Bubble Sort execution time: " + elapsedTimeMs + " ms");
+        }
         return arr;
     }
 
     // Merge Sort (O(n log n))
-    public int[] efficientSort(boolean showSteps) {
+    public int[] efficientSort(boolean showSteps, Boolean calculateTime) {
         int[] arr = Arrays.copyOf(array, array.length);
+        long startTime = System.nanoTime();
+
         if (showSteps)
             System.out.println(YELLOW + "Merge Sort Steps:" + RESET);
         mergeSort(arr, 0, arr.length - 1, showSteps);
+
+
+        if (calculateTime) {
+            long endTime = System.nanoTime();
+            double elapsedTimeMs = (endTime - startTime) / 1_000_000.0;
+            System.out.println("Merge Sort execution time: " + elapsedTimeMs + " ms");
+        }
         return arr;
     }
 
     // radix Sort (O(n))
-    public int[] nonComparisonSort(boolean showSteps) {
+    public int[] nonComparisonSort(boolean showSteps, Boolean calculateTime) {
         int[] arr = Arrays.copyOf(array, array.length);
+        long startTime = 0;
+        if (calculateTime) {
+            startTime = System.nanoTime();
+        }
+
         if (showSteps)
             System.out.println(YELLOW + "radix Sort Steps:" + RESET);
         OptionalInt min = Arrays.stream(arr).min();
@@ -60,6 +84,12 @@ public class SortingApp {
             radixSort(arr, showSteps);
         else if(min.isPresent()){
             System.out.println("Can't use radix sort with negative numbers");
+        }
+
+        if (calculateTime) {
+            long endTime = System.nanoTime();
+            double elapsedTimeMs = (endTime - startTime) / 1_000_000.0;
+            System.out.println("Radix Sort execution time: " + elapsedTimeMs + " ms");
         }
         return arr;
     }
@@ -177,12 +207,13 @@ public class SortingApp {
 
             System.out.print(CYAN + "Show intermediate steps? (true/false): " + RESET);
             boolean showSteps = scanner.nextBoolean();
+            boolean calculateTime = false;
 
             int[] sortedArray = null;
             switch (choice) {
-                case 1 -> sortedArray = sorter.simpleSort(showSteps);
-                case 2 -> sortedArray = sorter.efficientSort(showSteps);
-                case 3 -> sortedArray = sorter.nonComparisonSort(showSteps);
+                case 1 -> sortedArray = sorter.simpleSort(showSteps,calculateTime);
+                case 2 -> sortedArray = sorter.efficientSort(showSteps,calculateTime);
+                case 3 -> sortedArray = sorter.nonComparisonSort(showSteps,calculateTime);
                 default -> System.out.println(RED + "Invalid choice!" + RESET);
             }
 
