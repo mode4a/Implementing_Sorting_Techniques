@@ -1,4 +1,7 @@
+package com.example;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static java.lang.Math.log;
@@ -15,21 +18,18 @@ public class SortingApp {
     private int[] array;
 
     // Constructor: Reads integers from a file and initializes the array
-    public SortingApp(String filePath) throws IOException {
-        List<Integer> numbers = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line = br.readLine();
-            String[] values = line.split(",");
-            for (String value : values) {
-                numbers.add(Integer.parseInt(value.trim()));
-            }
-        }
-        array = numbers.stream().mapToInt(i -> i).toArray();
+    public SortingApp(int[] input) throws IOException {
+        array = input;
     }
 
     // Bubble Sort (O(n²))
-    public int[] simpleSort(boolean showSteps) {
+    public int[] simpleSort(boolean showSteps, Boolean calculateTime) {
         int[] arr = Arrays.copyOf(array, array.length);
+        long startTime = 0;
+        if (calculateTime) {
+            startTime = System.nanoTime();
+        }
+
         if (showSteps)
             System.out.println(YELLOW + "Bubble Sort Steps:" + RESET);
         for (int i = 0; i < arr.length; i++) {
@@ -43,15 +43,54 @@ public class SortingApp {
             if (showSteps)
                 System.out.println(YELLOW + Arrays.toString(arr) + RESET);
         }
+        if (calculateTime) {
+            long endTime = System.nanoTime();
+            double elapsedTimeMs = (endTime - startTime) / 1_000_000.0;
+            System.out.println("Bubble Sort execution time: " + elapsedTimeMs + " ms");
+        }
         return arr;
     }
 
     // Merge Sort (O(n log n))
-    public int[] efficientSort(boolean showSteps) {
+    public int[] efficientSort(boolean showSteps, Boolean calculateTime) {
         int[] arr = Arrays.copyOf(array, array.length);
+        long startTime = System.nanoTime();
+
         if (showSteps)
             System.out.println(YELLOW + "Merge Sort Steps:" + RESET);
         mergeSort(arr, 0, arr.length - 1, showSteps);
+
+
+        if (calculateTime) {
+            long endTime = System.nanoTime();
+            double elapsedTimeMs = (endTime - startTime) / 1_000_000.0;
+            System.out.println("Merge Sort execution time: " + elapsedTimeMs + " ms");
+        }
+        return arr;
+    }
+
+    // radix Sort (O(n))
+    public int[] nonComparisonSort(boolean showSteps, Boolean calculateTime) {
+        int[] arr = Arrays.copyOf(array, array.length);
+        long startTime = 0;
+        if (calculateTime) {
+            startTime = System.nanoTime();
+        }
+
+        if (showSteps)
+            System.out.println(YELLOW + "radix Sort Steps:" + RESET);
+        OptionalInt min = Arrays.stream(arr).min();
+        if(min.isPresent() && min.getAsInt() > 0)
+            radixSort(arr, showSteps);
+        else if(min.isPresent()){
+            System.out.println("Can't use radix sort with negative numbers");
+        }
+
+        if (calculateTime) {
+            long endTime = System.nanoTime();
+            double elapsedTimeMs = (endTime - startTime) / 1_000_000.0;
+            System.out.println("Radix Sort execution time: " + elapsedTimeMs + " ms");
+        }
         return arr;
     }
 
@@ -88,21 +127,7 @@ public class SortingApp {
             System.out.println(YELLOW + Arrays.toString(arr) + RESET);
     }
 
-    // radix Sort (O(n))
-    public int[] nonComparisonSort(boolean showSteps) {
-        int[] arr = Arrays.copyOf(array, array.length);
-        if (showSteps)
-            System.out.println(YELLOW + "radix Sort Steps:" + RESET);
-        OptionalInt min = Arrays.stream(arr).min();
-        if(min.isPresent() && min.getAsInt() > 0)
-            radixSort(arr, showSteps);
-        else if(min.isPresent()){
-            System.out.println("Can't use radix sort with negative numbers");
-        }
-        return arr;
-    }
-
-    public void radixSort(int[] arr, Boolean showsteps){
+    private void radixSort(int[] arr, Boolean showsteps){
         int base = arr.length, iterations, curBase = base;
         OptionalInt maxElement = Arrays.stream(arr).max();
         iterations = (int) (log(maxElement.getAsInt()) / log(base)) + 1;
@@ -134,10 +159,20 @@ public class SortingApp {
         }
     }
 
-    public Integer myMod(Integer a, Integer currBase, Integer base){
+    private Integer myMod(Integer a, Integer currBase, Integer base){
         int prevBase = currBase / base;
         return (a % currBase) / prevBase ;
     }
+
+    private static int[] readNumbersFromFile(String filePath) throws IOException, NumberFormatException {
+        String content = Files.readString(Path.of(filePath)).trim();
+        if (content.isEmpty()) {
+            throw new IOException("File is empty: " + filePath);
+        }
+        String[] parts = content.split(",\\s*");
+        return Arrays.stream(parts).mapToInt(Integer::parseInt).toArray();
+    }
+
 
     // Command-line interface for the user
     public static void main(String[] args) {
@@ -149,7 +184,8 @@ public class SortingApp {
         String filePath = scanner.nextLine();
 
         try {
-            sorter = new SortingApp(filePath);
+            int tmpArray[] = readNumbersFromFile(filePath);
+            sorter = new SortingApp(tmpArray);
         } catch (IOException e) {
             System.out.println(RED + "Error reading file: " + e.getMessage() + RESET);
             scanner.close();
@@ -171,12 +207,13 @@ public class SortingApp {
 
             System.out.print(CYAN + "Show intermediate steps? (true/false): " + RESET);
             boolean showSteps = scanner.nextBoolean();
+            boolean calculateTime = false;
 
             int[] sortedArray = null;
             switch (choice) {
-                case 1 -> sortedArray = sorter.simpleSort(showSteps);
-                case 2 -> sortedArray = sorter.efficientSort(showSteps);
-                case 3 -> sortedArray = sorter.nonComparisonSort(showSteps);
+                case 1 -> sortedArray = sorter.simpleSort(showSteps,calculateTime);
+                case 2 -> sortedArray = sorter.efficientSort(showSteps,calculateTime);
+                case 3 -> sortedArray = sorter.nonComparisonSort(showSteps,calculateTime);
                 default -> System.out.println(RED + "Invalid choice!" + RESET);
             }
 
